@@ -7,7 +7,6 @@
 package io.liteglue;
 
 import android.annotation.SuppressLint;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import jsqlite.*;
@@ -29,6 +28,7 @@ class SpatialiteDatabase {
             Pattern.CASE_INSENSITIVE);
 
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
+    private File dbFile;
     private Database db;
 
     /**
@@ -36,20 +36,11 @@ class SpatialiteDatabase {
      *
      * @param dbfile The database File specification
      */
-    void open(File dbfile) throws java.lang.Exception {
+    void open(File dbfile) throws Exception {
+        dbFile = dbfile; // for possible bug workaround
         if (!dbfile.exists()) {
-            Log.d(SpatialiteDatabase.class.getSimpleName(), "Creating sqlite db: " + dbfile.getAbsolutePath());
-
-            // Use Android's sqlite implementation (android.database.sqlite.SQLiteDatabase) to
-            // create an empty sqlite database so we can open it afterwards using
-            // android-spatialite's implementation (jsqlite.SpatialiteDatabase)
-            // android-spatialite: https://github.com/mrenouf/android-spatialite
-            SQLiteDatabase tempDb = SQLiteDatabase.openOrCreateDatabase(dbfile, null);
-            tempDb.close();
-
-            if (!dbfile.exists()) {
-                throw new java.lang.Exception("Creating sqlite db failed: " + dbfile.getAbsolutePath());
-            }
+            throw new IllegalArgumentException("No such db file: "
+                    + dbfile);
         }
         Log.d(SpatialiteDatabase.class.getSimpleName(), "Open sqlite db: " + dbfile.getAbsolutePath());
         db = new Database();
@@ -143,8 +134,10 @@ class SpatialiteDatabase {
                     if (jsonparams == null) {
                         db.exec(query, null);
                     } else {
-                        String[] arguments = getStringArgs(jsonparams[i]);
-                        db.exec(query, null, arguments);
+                        //String[] arguments = getStringArgs(jsonparams[i]);
+                        //這裡也有可能是錯的，幹
+                        //db.exec(query, null, arguments);
+                        executeSqlStatementQuery(query,jsonparams[i]);
                     }
 
                     rowsAffected = db.changes();
@@ -173,8 +166,20 @@ class SpatialiteDatabase {
                         Log.w("executeSqlBatch", "Executing insert query without parameters!");
                         db.exec(query, null);
                     } else {
-                        String[] arguments = getStringArgs(jsonparams[i]);
-                        db.exec(query, null, arguments);
+                        //String[] arguments = getStringArgs(jsonparams[i]);
+                        //Log.v("John debugs....:","");
+                        //Log.v("John debugs i...:",i+"");
+                        //System.out.println(jsonparams);
+                        //System.out.println(jsonparams[i]);
+                        //System.out.println("SQL:"+query);
+                        //db.exec(query, null, arguments);
+                        
+                        //我覺得這寫錯了
+                        //好吧，被我修好了~_~
+                        //By John
+                        executeSqlStatementQuery(query,jsonparams[i]);
+                        
+                        
                     }
 
                     long insertId = db.last_insert_rowid();
@@ -259,10 +264,13 @@ class SpatialiteDatabase {
     }
 
     private static String[] getStringArgs(JSONArray sqlArgs) throws JSONException {
+        System.out.println("sqlArgs.length():"+sqlArgs.length());
         String[] result = new String[sqlArgs.length()];
         for (int i = 0; i < sqlArgs.length(); i++) {
             result[i] = sqlArgs.getString(i);
+            System.out.println( "WTFFFFF:"+result[i]);
         }
+        
         return result;
     }
 

@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DisyInformationssysteme/Cordova-spatialite-storage.git"
+    "url": "git+https://github.com/DisyInformationssysteme/Cordova-spatialite-storage.git"
   },
   "keywords": [
     "sqlite",
@@ -34,10 +34,19 @@
       "version": ">=3.3.0"
     }
   ],
-  "author": "various",
+  "author": {
+    "name": "various"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/DisyInformationssysteme/Cordova-spatialite-storage/issues"
   },
-  "homepage": "https://github.com/DisyInformationssysteme/Cordova-spatialite-storage"
+  "homepage": "https://github.com/DisyInformationssysteme/Cordova-spatialite-storage",
+  "readme": "# Spatialite extension fork\r\nThis is a fork of the https://github.com/litehelpers/Cordova-sqlite-storage project. Some changes were made to allow the plugin to work with the *SpatiaLite* extension for SQLite.\r\n\r\nSpatiaLite enables the SQLite database to understand and process spatial data, e.g. coordinates and shapes. For more information see https://www.gaia-gis.it/fossil/libspatialite/index\r\n\r\nCurrently, only Android and iOS are supported to work with this plugin.\r\n\r\n# Installation\r\nUse the cordova command line tool in your project folder:\r\n```\r\ncordova plugin add https://github.com/DisyInformationssysteme/Cordova-spatialite-storage\r\n\r\n// alternative, if the above does not work\r\ncordova plugin add https://github.com/DisyInformationssysteme/Cordova-spatialite-storage#master-rc\r\n```\r\n",
+  "readmeFilename": "README.md",
+  "gitHead": "7ecb45e8970777a13c2e2b639d6a80f3b88cdd00",
+  "_id": "cordova-spatialite-storage@0.7.11",
+  "_shasum": "484837f04fb3c97a3f187d59f869a134103f7c38",
+  "_from": "git+https://github.com/DisyInformationssysteme/Cordova-spatialite-storage.git#master-rc",
+  "_resolved": "git+https://github.com/DisyInformationssysteme/Cordova-spatialite-storage.git#7ecb45e8970777a13c2e2b639d6a80f3b88cdd00"
 }

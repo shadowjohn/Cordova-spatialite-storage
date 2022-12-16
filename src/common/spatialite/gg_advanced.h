@@ -1550,7 +1550,7 @@ extern "C"
  \param geom2 the second Geometry object to be evaluated
  \param blob2 the BLOB corresponding to the second Geometry
  \param size2 the size (in bytes) of the second BLOB
-
+
  \return 0 if false: any other value if true
 
  \sa gaiaGeomCollTouches, gaiaGeomCollTouches_r
@@ -2976,7 +2976,7 @@ extern "C"
  not reentrant and thread unsafe.
 
  */
-    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaTriangularGrid (gaiaGeomCollPtr geom,
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaTriangularGrid (gaiaGeomCollPtr geom,,
 							double origin_x,
 							double origin_y,
 							double size,
@@ -3430,7 +3430,7 @@ extern "C"
  */
     GAIAGEO_DECLARE int gaiaEllipsoidAzimuth (double xa, double ya, double xb,
 					      double yb, double a, double b,
-					      double *azimuth);
+					      double *azimuth);
 
 /**
  Utility function: ProjectedPoint

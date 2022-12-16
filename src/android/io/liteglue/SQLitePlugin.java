@@ -163,43 +163,58 @@ public class SQLitePlugin extends CordovaPlugin {
         // TODO: is it an issue that we can orphan an existing thread?  What should we do here?
         // If we re-use the existing DBRunner it might be in the process of closing...
         DBRunner r = RUNNERS.get(dbname);
-
+        Log.v("info", "John Debug dbname: " + dbname);
+        Log.v("info", "John Debug dbnameA");
+        
         // Brody TODO: It may be better to terminate the existing db thread here & start a new one, instead.
         if (r == null) {
             r = new DBRunner(dbname, options, cbc);
+            Log.v("info", "John Debug dbnameB");
             RUNNERS.put(dbname, r);
             cordova.getThreadPool().execute(r);
         } else {
             // don't orphan the existing thread; just re-open the existing database.
             // In the worst case it might be in the process of closing, but even that's less serious
             // than orphaning the old DBRunner.
+            Log.v("info", "John Debug dbnameC");
             cbc.success();
         }
     }
 
-    private SpatialiteDatabase openDatabase(String dbname, String dbpath, boolean createFromAssets, CallbackContext cbc) throws Exception {
+    private SpatialiteDatabase openDatabase(String dbname, boolean createFromAssets, CallbackContext cbc) throws Exception {
         try {
             // ASSUMPTION: no db (connection/handle) is already stored in the map
             // [should be true according to the code in DBRunner.run()]
 
-            File dbfile = (dbpath != null) ? new File(dbpath) : this.cordova.getActivity().getDatabasePath(dbname);
-
+            // create database file from uri
+            Log.v("info", "John Debug dbnameD: "+ dbname);
+            //Log.v("info", "John Debug new URI(dbname):"+ new URI(dbname));
+            //Fixed By John
+            //File dbfile = new File(new URI(dbname));
+            /*File dbfile = new File(dbfile.getAbsolutePath());
+            
             if (!dbfile.exists() && createFromAssets) {
                 createFromAssets(dbname, dbfile);
             }
 
             if (!dbfile.exists()) {
-                if (dbpath != null) {
-                    throw new Exception("Unable to find database: " + dbfile);
-                }
-                Log.w("info", "Unable to find database " + dbfile + ", creating new file!");
+                Log.v("info", "Unable to find database " + dbfile + ", creating new file!");
                 dbfile.getParentFile().mkdirs();
             }
+            */
+            File dbfile = new File(dbname);
+            //Log.v("info", "Open sqlite db: " + dbfile.getAbsolutePath());
+            if (!dbfile.exists()) {
+                Log.v("info", "John Debug dbnameD not exists: "+ dbname);
+                //dbfile.getParentFile().mkdirs();
+                android.database.sqlite.SQLiteDatabase mydb = android.database.sqlite.SQLiteDatabase.openOrCreateDatabase(dbname,null);
+                mydb.close();
+                //SQLiteDatabase mydb = SQLiteDatabase.openOrCreateDatabase(dbname, null);
+            }
 
-            Log.v("info", "Open sqlite db: " + dbfile.getAbsolutePath());
 
             SpatialiteDatabase mydb = new SpatialiteDatabase();
-            mydb.open(dbfile);
+            mydb.open(dbfile); //dbfile
 
             if (cbc != null) // XXX Android locking/closing BUG workaround
             {
@@ -337,7 +352,6 @@ public class SQLitePlugin extends CordovaPlugin {
 
     private class DBRunner implements Runnable {
         private final String dbname;
-        private final String dbpath;
         private final boolean createFromAssets;
         private final boolean oldImpl;
         private final boolean bugWorkaround;
@@ -349,7 +363,6 @@ public class SQLitePlugin extends CordovaPlugin {
 
         DBRunner(String dbname, JSONObject options, CallbackContext cbc) {
             this.dbname = dbname;
-            this.dbpath = options.optString("path", null);
             createFromAssets = options.has("createFromResource");
             oldImpl = options.has("androidOldDatabaseImplementation");
             Log.v(SQLitePlugin.class.getSimpleName(), "Android db implementation: " + (oldImpl ? "OLD" : "spatialite"));
@@ -365,7 +378,7 @@ public class SQLitePlugin extends CordovaPlugin {
         @Override
         public void run() {
             try {
-                mydb = openDatabase(dbname, dbpath, createFromAssets, openCbc);
+                mydb = openDatabase(dbname, createFromAssets, openCbc);
             } catch (Exception e) {
                 Log.e(SQLitePlugin.class.getSimpleName(), "unexpected error, stopping db thread", e);
                 RUNNERS.remove(dbname);

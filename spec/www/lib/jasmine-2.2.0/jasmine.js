@@ -565,7 +565,7 @@ getJasmineRequireObj().Env = function(j$) {
     // TODO: we may just be able to pass in the fn instead of wrapping here
     var buildExpectationResult = j$.buildExpectationResult,
         exceptionFormatter = new j$.ExceptionFormatter(),
-        expectationResultFactory = function(attrs) {
+        expectationResultFactory = function(attrs) {
           attrs.messageFormatter = exceptionFormatter.message;
           attrs.stackFormatter = exceptionFormatter.stack;
 
