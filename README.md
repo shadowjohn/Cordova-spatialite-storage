@@ -10,8 +10,7 @@ switch (getDeviceKind()) {
 	case "ANDROID":
 		{
 			var dbpath = str_replace("file://", "", cordova.file.externalRootDirectory) + '/' + window['APP_PATH'] + '/' + osmData + '/' + osmData + '.db';
-			dbpath = str_replace("//", "/", dbpath);
-			dbpath = str_replace("//", "/", dbpath);
+			dbpath = dbpath.replaceAll("//","/");
 			//console.log(dbpath);
 			var op = {
 				name: dbpath,
@@ -23,8 +22,7 @@ switch (getDeviceKind()) {
 	case "IOS":
 		{
 			var dbpath = cordova.file.documentsDirectory + '/' + window['APP_PATH'] + '/' + osmData + '/' + osmData + '.db';
-			dbpath = str_replace("//", "/", dbpath);
-			dbpath = str_replace("//", "/", dbpath);
+			dbpath = dbpath.replaceAll("//","/");
 			//console.log(dbpath);
 			var op = {
 				name: dbpath,
