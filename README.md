@@ -1,14 +1,36 @@
 # Spatialite extension fork
-This is a fork of the https://github.com/litehelpers/Cordova-sqlite-storage project. Some changes were made to allow the plugin to work with the *SpatiaLite* extension for SQLite.
+This is a fork of the https://github.com/litehelpers/Cordova-sqlite-storage project.
 
-SpatiaLite enables the SQLite database to understand and process spatial data, e.g. coordinates and shapes. For more information see https://www.gaia-gis.it/fossil/libspatialite/index
+此版在 ios 加入 sqlite3-base64、sqlite3-regexp-cached ( From : cordova-sqlite-ext )
 
-Currently, only Android and iOS are supported to work with this plugin.
+Usage:
 
-# Installation
-Use the cordova command line tool in your project folder:
-```
-cordova plugin add https://github.com/DisyInformationssysteme/Cordova-spatialite-storage#2.0.0
-```
-
-See [releases page](https://github.com/DisyInformationssysteme/Cordova-spatialite-storage/releases) for available version tags.
+switch (getDeviceKind()) {
+	case "ANDROID":
+		{
+			var dbpath = str_replace("file://", "", cordova.file.externalRootDirectory) + '/' + window['APP_PATH'] + '/' + osmData + '/' + osmData + '.db';
+			dbpath = str_replace("//", "/", dbpath);
+			dbpath = str_replace("//", "/", dbpath);
+			//console.log(dbpath);
+			var op = {
+				name: dbpath,
+				location: 'default'
+			};
+			dbObj = window.sqlitePlugin.openDatabase(op);
+		}
+		break;
+	case "IOS":
+		{
+			var dbpath = cordova.file.documentsDirectory + '/' + window['APP_PATH'] + '/' + osmData + '/' + osmData + '.db';
+			dbpath = str_replace("//", "/", dbpath);
+			dbpath = str_replace("//", "/", dbpath);
+			//console.log(dbpath);
+			var op = {
+				name: dbpath,
+				location: 2,
+				createFromLocation: 1
+			};
+			dbObj = window.sqlitePlugin.openDatabase(op);
+		}
+		break;
+}

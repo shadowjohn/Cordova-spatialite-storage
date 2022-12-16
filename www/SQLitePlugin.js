@@ -531,12 +531,6 @@
                     }
                 }
             }
-            if (openargs.path) {
-                openargs.path = extractFilePath(openargs.path)
-                if (!openargs.name) {
-                    openargs.name = openargs.path
-                }
-            }
             dblocation = !!openargs.location ? dblocations[openargs.location] : null;
             openargs.dblocation = dblocation || dblocations[0];
             if (!!openargs.createFromLocation && openargs.createFromLocation === 1) {
@@ -576,14 +570,5 @@
         openDatabase: SQLiteFactory.opendb,
         deleteDatabase: SQLiteFactory.deleteDb
     };
-
-    function extractFilePath(pathOrUrl) {
-        var urlRegExp = new RegExp('^file:/*(/.*)$')
-        if (match = urlRegExp.exec(pathOrUrl)) {
-            return match[1]
-        } else {
-            return pathOrUrl
-        }
-    }
 
 }).call(this);

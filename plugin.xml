@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-spatialite-storage"
-    version="2.0.0">
+    version="1.2.0">
 
     <name>Cordova sqlite/spatialite storage plugin</name>
 
@@ -50,10 +50,9 @@
         <source-file src="src/android/jsqlite/Trace.java" target-dir="src/jsqlite/" />
         <source-file src="src/android/jsqlite/Vm.java" target-dir="src/jsqlite/" />
 
+        <source-file src="src/android/native/armeabi/libjsqlite.so" target-dir="libs/armeabi/" />
         <source-file src="src/android/native/armeabi-v7a/libjsqlite.so" target-dir="libs/armeabi-v7a/" />
         <source-file src="src/android/native/x86/libjsqlite.so" target-dir="libs/x86/" />
-        <source-file src="src/android/native/x86_64/libjsqlite.so" target-dir="libs/x86_64/" />
-        <source-file src="src/android/native/arm64-v8a/libjsqlite.so" target-dir="libs/arm64-v8a/" />
 
     </platform>
 
@@ -478,6 +477,15 @@
         <header-file src="src/common/spatialite/gg_xml.h" target-dir="common/spatialite"/>
         <header-file src="src/common/spatialite/spatialite.h" target-dir="common/spatialite"/>
         <header-file src="src/common/spatialite/sqlite.h" target-dir="common/spatialite"/>
+        <!--By John-->
+        <header-file src="src/common/sqlite3-base64/sqlite3_base64.h" target-dir="common/sqlite3-base64"/>
+        <source-file src="src/common/sqlite3-base64/sqlite3_base64.c" target-dir="common/sqlite3-base64" />
+        <header-file src="src/common/sqlite3-regexp-cached/sqlite3_regexp.h" target-dir="common/sqlite3-regexp-cached"/>
+        <source-file src="src/common/sqlite3-regexp-cached/sqlite3_regexp.c" target-dir="common/sqlite3-regexp-cached" />
+        <header-file src="src/common/libb64-core/cencode.h" target-dir="common/libb64-core"/>
+        <source-file src="src/common/libb64-core/cencode.c" target-dir="common/libb64-core" />
+        <header-file src="src/common/libb64-core/cdecode.h" target-dir="common/libb64-core"/>
+        <source-file src="src/common/libb64-core/cdecode.c" target-dir="common/libb64-core" />
 
     </platform>
 
