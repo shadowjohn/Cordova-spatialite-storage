@@ -5,6 +5,7 @@ This is a fork of the https://github.com/litehelpers/Cordova-sqlite-storage proj
 
 Usage:
 
+<pre>
 switch (getDeviceKind()) {
 	case "ANDROID":
 		{
@@ -34,3 +35,4 @@ switch (getDeviceKind()) {
 		}
 		break;
 }
+</pre>
