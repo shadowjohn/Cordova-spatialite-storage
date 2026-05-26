@@ -127,22 +127,32 @@ static void sqlite_regexp(sqlite3_context* context, int argc, sqlite3_value** va
             NSLog(@"Reusing existing database connection for db name %@", dbfilename);
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Database opened"];
         } else {
-            NSURL *url = [NSURL URLWithString:dbfilename];
-            NSString *absoluteFile = [url path];
-            
-            const char *name = [absoluteFile UTF8String];
-            sqlite3 *db;
+            NSString *absoluteFile = dbfilename;
+            if ([dbfilename hasPrefix:@"file://"]) {
+                NSURL *url = [NSURL URLWithString:dbfilename];
+                if (url != NULL && [url path] != NULL) {
+                    absoluteFile = [url path];
+                }
+            }
+            NSString *decodedFile = [absoluteFile stringByRemovingPercentEncoding];
+            if (decodedFile != NULL) {
+                absoluteFile = decodedFile;
+            }
+
+            const char *name = [absoluteFile fileSystemRepresentation];
+            sqlite3 *db = NULL;
 
             NSLog(@"open full db path: %@", absoluteFile);
             /* Option to create from resource (pre-populated) if db does not exist: */
             if (![[NSFileManager defaultManager] fileExistsAtPath:absoluteFile]) {
 				NSLog(@"Error! Unable to find database!");
-                return;
-            }
-
-            if (sqlite3_open(name, &db) != SQLITE_OK) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unable to find database"];
+            } else if (sqlite3_open(name, &db) != SQLITE_OK) {
+                NSLog(@"Error! Unable to open database: %s", sqlite3_errmsg(db));
+                if (db != NULL) {
+                    sqlite3_close(db);
+                }
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unable to open DB"];
-                return;
             } else {
                 //By Gis John
                 const char * err1;
@@ -165,16 +175,20 @@ static void sqlite_regexp(sqlite3_context* context, int argc, sqlite3_value** va
                     [openDBs setObject: dbPointer forKey: dbfilename];
                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Database opened"];
                 } else {
+                    NSLog(@"Error! Unable to read sqlite_master: %s", sqlite3_errmsg(db));
                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unable to open DB with key"];
-                    // XXX TODO: close the db handle & [perhaps] remove from openDBs!!
+                    sqlite3_close(db);
+                    db = NULL;
+                }
+                
+                if (db != NULL && dbPointer != NULL) {
+                    // initialize spatialite
+                    void* cache = spatialite_alloc_connection ();
+                    spatialite_init_ex (db, cache, 1);
+                    NSValue *cachePointer = [NSValue valueWithPointer:cache];
+                    [openConnections setObject: cachePointer forKey: dbPointer];
                 }
             }
-            
-            // initialize spatialite
-            void* cache = spatialite_alloc_connection ();
-            spatialite_init_ex (db, cache, 1);
-            NSValue *cachePointer = [NSValue valueWithPointer:cache];
-            [openConnections setObject: cachePointer forKey: dbPointer];
         }
     }
 

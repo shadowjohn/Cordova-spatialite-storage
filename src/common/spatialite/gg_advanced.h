@@ -2976,7 +2976,7 @@ extern "C"
  not reentrant and thread unsafe.
 
  */
-    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaTriangularGrid (gaiaGeomCollPtr geom,,
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaTriangularGrid (gaiaGeomCollPtr geom,
 							double origin_x,
 							double origin_y,
 							double size,
